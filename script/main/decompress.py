@@ -1,4 +1,5 @@
 from bitstring import BitArray
+from sys import exit
 #import json
 
 def startF(data: bytes, filepath: str = "file.txt", mode: str = "text"):
@@ -10,7 +11,7 @@ def startF(data: bytes, filepath: str = "file.txt", mode: str = "text"):
     if mode == "text":
         open(filepath, "w").write(file_text)
     elif mode == "binary":
-        open(filepath, "wb").write(bytes.fromhex(file_text))
+        open(filepath, "wb").write(gen_binary_from_bin(file_text))
 
 def startR(data: bytes, mode: str = "text"):
     """Returns the output"""
@@ -21,7 +22,7 @@ def startR(data: bytes, mode: str = "text"):
     if mode == "text":
         return file_text
     elif mode == "binary":
-        return bytes.fromhex(file_text)
+        return gen_binary_from_bin(file_text)
 
 def repeating_decompress(data: str):
     print("Repeating decompresser")
@@ -63,7 +64,7 @@ def tree(data: bytes):
                 data = data[len(bin_combi):]
                 break
         if file_text == "":
-            raise LookupError(f"Der lock up tabel ist nicht korekt! {data[len(list(lock_up_table.values())[-1])]} nicht in lock up tabel gefunden!")
+            exit()
         if file_text == last_file_text:
             break
         
@@ -74,7 +75,7 @@ def tree(data: bytes):
 
 def gen_list_form_bin(bitstring: str) -> list:
     if len(bitstring) % 8 != 0:
-        raise ValueError("Die Länge des Bitstrings muss ein Vielfaches von 8 sein.")
+        exit()
 
     values = []
 
@@ -84,6 +85,19 @@ def gen_list_form_bin(bitstring: str) -> list:
         )
     
     return values
+
+def gen_binary_from_bin(bitstring: str):
+    if len(bitstring) % 8 != 0:
+        exit()
+
+    values = []
+
+    for index in range(int(len(bitstring) / 8)):
+        values.append(
+            ord(bitstring_to_int(bitstring[index * 8:(index + 1) * 8]))
+        )
+    
+    return bytes(values)
 
 def gen_tree(values: list, death = 0):
     if len(values) <= 0:
@@ -116,13 +130,13 @@ def get_number(n: int) -> str:
 
 def bitstring_to_int(bitstring):
     if len(bitstring) != 8:
-        raise ValueError("Der Bitstring muss genau 8 Bit lang sein.")
+        exit()
     
     return int(bitstring, 2)
 
 def bitstring_to_bytes(bitstring):
     if len(bitstring) % 8 != 0:
-        raise ValueError("Die Länge des Bitstrings muss ein Vielfaches von 8 sein.")
+        exit()
     
     byte_array = []
     for i in range(0, len(bitstring), 8):
