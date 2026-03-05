@@ -1,11 +1,8 @@
-#import json
+from sys import exit
 
-def startF(data: str, filepath: str = "file.yz", mode: str = "text"):
+def startF(data: str, filepath: str = "file.yz"):
     """Writes the output to a file"""
-    if mode == "text":
-        og_file_size = len(data)
-    elif mode == "binary":
-        og_file_size = len(data) / 2
+    og_file_size = len(data)
 
     data = repeating_optimizer(data)
     print("-" * 25)
@@ -18,7 +15,7 @@ def startF(data: str, filepath: str = "file.yz", mode: str = "text"):
 
     open(filepath, "wb").write(bitstring_to_bytes(file_bits))
 
-def startR(data: str, mode: str = "text"):
+def startR(data: str):
     """Returns the output"""
     og_file_size = len(data)
 
@@ -136,7 +133,7 @@ def get_number(n: int) -> str:
 
 def bitstring_to_bytes(bitstring):
     if len(bitstring) % 8 != 0:
-        raise ValueError("Die Länge des Bitstrings muss ein Vielfaches von 8 sein.")
+        exit()
     
     byte_array = []
     for i in range(0, len(bitstring), 8):
